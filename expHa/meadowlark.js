@@ -7,11 +7,11 @@ var handlebars = require('express3-handlebars')
 	.create({ defaultLayout: 'main' });
 
 var fortunes = [
-	"Conquer your fears or they will conquer you.",
-	"Rivers need springs.",
-	"Do not fear what you don't know.",
+	"Conquer your fears or they will conquer you",
+	"Rivers need aprings.",
+	"Do not fear what you don't know",
 	"You will have a pleasant surprise.",
-	"Whenever possible, keep it simple.",
+	"Whenever possible, keep it simple"
 ];
 
 app.engine('handlebars', handlebars.engine);
@@ -29,25 +29,23 @@ app.get('/', function(req, res){
 app.get('/about', function(req, res){
 	//res.type('text/plain');
 	//res.send('About Meadowlark Travel');
-	var randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
-	res.render('about', { fortune: randomFortune });
+	// var randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+	var fortune = require('./lib/fortune.js');
+	res.render('about', { fortune: fortune.getFortune() });
+	// res.render('about', { fortune: randomFortune });
 });
 
 // 定制404页面
 app.use(function(req, res){
-	//res.type('text/plain');
 	res.status(404);
 	res.render('404');
-	//res.send('404 - Not Found');
 });
 
 // 定制500页面
 app.use(function(err, req, res, next){
 	console.err(err.stack);
-	//res.type('text/plain');
 	res.status(500);
 	res.render('500');
-	//res.send('500 - Server Error');
 });
 
 app.listen(app.get('port'), function(){
