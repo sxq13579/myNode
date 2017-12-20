@@ -14,6 +14,8 @@ var fortunes = [
 	"Whenever possible, keep it simple"
 ];
 
+if( app.thing === null ) console.log('bleat!');
+
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
@@ -41,6 +43,21 @@ app.get('/about', function(req, res){
 		pageTestScript: '/qa/tests-about.js'
 	});
 	// res.render('about', { fortune: randomFortune });
+});
+
+app.get('/headers', function(req, res){
+	res.set('Content-Type', 'text/plain');
+	var s = '';
+	for(var name in req.headers) s += name + ': ' + req.headers[name] + '\n';
+	res.send(s);
+});
+
+app.get('/tours/hood-river', function(req, res){
+	res.render('tours/hood-river');
+});
+
+app.get('/tours/request-group-rate', function(req, res){
+	res.render('tours/request-group-rate');
 });
 
 // 定制404页面
