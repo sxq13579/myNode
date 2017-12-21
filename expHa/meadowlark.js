@@ -14,6 +14,11 @@ var fortunes = [
 	"Whenever possible, keep it simple"
 ];
 
+var tours = [
+	{id: 0, name: 'Hood River', price: 99.99},
+	{id: 1, name: 'Oregon Coast', price: 149.95}
+];
+
 if( app.thing === null ) console.log('bleat!');
 
 app.engine('handlebars', handlebars.engine);
@@ -60,6 +65,63 @@ app.get('/tours/request-group-rate', function(req, res){
 	res.render('tours/request-group-rate');
 });
 
+// app.get('/api/tours', function(req, res) {
+// 	res.json(tours);
+// });
+
+app.get('/api/tours', function(req, res){
+	var toursXml = '<?xml version="1.0" ?><tours>' + tours.map(function(p){
+		return '<tour price="' + p.price + '" id="' + p.id + '">' + p.name + '</tour>';
+	}).join('\n') + '<tours>';
+
+	var toursText = tours.map(function(p) {
+		return p.id + ': ' + p.name + ' (' + p.price + ')';
+	}).join('\n');
+
+	res.format({
+		'application/json': function() {
+			res.json(tours);
+		},
+		'application/xml': function() {
+			res.type('application/xml');
+			res.send(toursXml);
+		},
+		'text/xml': function() {
+			res.type('text/xml');
+			res.send(toursXml);
+		},
+		'text/plain': function() {
+			res.type('text/plain');
+			res.send(toursXml);
+		}
+	});
+});
+
+// api用于更新一条数据并且返回JSON；参数在查询字符串中传递
+app.put('/api/tour/:id', function(req, res) {
+	var p = tours.some(function(p){ return p.id == req.params.id });
+	if(p) {
+		if( req.query.name ) p.name = req.query.name;
+		if( req.query.price ) p.price = req.query.price;
+		res.json({success: true});
+	} else {
+		res.json({error: 'No such tour exits.'});
+	}
+});
+
+// api用于删除一个产品
+app.delete('/api/tour/:id', function(req, res) {
+	var i;
+	for ( var i = tours.length-1; i>=0; i--) {
+		if( tours[i].id == req.params.id ) break;
+		if( i>= 0) {
+			tours.splice(i, 1);
+			res.json({success: true});
+		} else {
+			res.json({error: 'No such tour exists.'});
+		}
+	}
+})
 // 定制404页面
 app.use(function(req, res){
 	res.status(404);
@@ -68,7 +130,7 @@ app.use(function(req, res){
 
 // 定制500页面
 app.use(function(err, req, res, next){
-	console.err(err.stack);
+	console.log(err.stack);
 	res.status(500);
 	res.render('500');
 });
