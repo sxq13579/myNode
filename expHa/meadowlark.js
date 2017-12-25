@@ -24,6 +24,7 @@ if( app.thing === null ) console.log('bleat!');
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + '/public'));
+app.use(require('body-parser')());
 
 app.use(function(req, res, next){
 	res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
@@ -95,6 +96,18 @@ app.get('/api/tours', function(req, res){
 			res.send(toursXml);
 		}
 	});
+});
+
+app.get('/newsletter', function(req, res){
+	res.render('newsletter', {csrf: 'CSRF token goes here'});
+})
+
+app.post('/process', function(req, res){
+	console.log('From (from querystring):' + req.query.form);
+	console.log('CSRF token (from hidden form field):' + req.body._csrf);
+	console.log('Name (from visible form field):' + req.body.name);
+	console.log('Email (from visible form field):' + req.body.email);
+	res.redirect(303, '/about');
 });
 
 // api用于更新一条数据并且返回JSON；参数在查询字符串中传递
