@@ -1,9 +1,15 @@
 {
   "dependencies": {
     "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
     "express3-handlebars": "^0.5.2",
-    "jshint": "^2.9.5"
+    "formidable": "^1.1.1",
+    "jquery-file-upload-middleware": "^0.1.8",
+    "jshint": "^2.9.5",
+    "nodemailer": "^4.4.1",
+    "nodemailer-smtp-transport": "^2.7.4"
   },
   "devDependencies": {
     "chai": "^4.1.2",
